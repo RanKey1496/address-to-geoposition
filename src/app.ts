@@ -1,8 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import RegistrableController from './controllers/registrableController';
 import { container } from './config/inversify';
-import { forbiddenResponse, internalResponse } from './util/response';
-import { Forbidden } from './util/exception';
+import { internalResponse } from './util/response';
 import { createConnection } from 'typeorm';
 import { ENVIRONMENT } from './util/secret';
 import compression from 'compression';
@@ -39,9 +38,6 @@ export default class App {
         controllers.forEach(controller => controller.register(app));
 
         app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-            if (err instanceof Forbidden) {
-                return forbiddenResponse(res, err.message);
-            }
             return internalResponse(res);
         });
         return app;
