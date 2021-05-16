@@ -1,11 +1,15 @@
 import { injectable } from 'inversify';
-import { Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import UserEntity from '../../entity/user';
 
 @injectable()
 export default class UserRepository {
 
     private userRepository: Repository<UserEntity>;
+
+    constructor() {
+        this.userRepository = getRepository(UserEntity);
+    }
 
     /**
      * Guarda en la BD un registro

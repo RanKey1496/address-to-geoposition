@@ -10,6 +10,19 @@ services:
       - POSTGRES_DB=converterdb
     volumes:
       - pgdata:/var/lib/postgresql/data
+  converter:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=geoposition
+      - DB_NAME=converterdb
+      - DB_LOGGING=true
 volumes:
   pgdata:
     external: false

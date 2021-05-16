@@ -3,10 +3,10 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 @Entity()
 export default class UserEntity {
 
-    @PrimaryColumn({ length: 50 })
+    @PrimaryColumn()
     public username: string;
 
-    @Column({ length: 100 })
+    @Column()
     public passwordHash: string;
 
 }

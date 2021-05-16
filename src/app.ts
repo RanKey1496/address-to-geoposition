@@ -1,15 +1,17 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import RegistrableController from './controllers/registrableController';
 import { container } from './config/inversify';
-import { internalResponse } from './util/response';
+import { exceptionResponse, internalResponse } from './util/response';
 import { createConnection } from 'typeorm';
 import { ENVIRONMENT } from './util/secret';
+import { HttpException } from './util/exception';
 import compression from 'compression';
 import helmet from 'helmet';
 import errorHandler from 'errorhandler';
 import morgan from 'morgan';
 import cors from 'cors';
 import Types from './config/types';
+import { dbOptions } from './config/db';
 
 export default class App {
 
@@ -22,6 +24,8 @@ export default class App {
      * Adicional creamos una conexión a la base de datos Postgresql.
      */
     private async init() {
+
+        await createConnection(dbOptions);
 
         const app: Application = express();
         app.set('port', process.env.PORT || 3000);
@@ -38,6 +42,9 @@ export default class App {
         controllers.forEach(controller => controller.register(app));
 
         app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+            if (err instanceof HttpException) {
+                return exceptionResponse(res, err);
+            }
             return internalResponse(res);
         });
         return app;

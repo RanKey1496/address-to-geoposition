@@ -1,4 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
+import UserEntity from '../entity/user';
 
 export const dbOptions: ConnectionOptions = {
     type: 'postgres',
@@ -8,7 +9,8 @@ export const dbOptions: ConnectionOptions = {
     password: process.env.DB_PASSWORD || 'geoposition',
     database: process.env.DB_NAME || 'converterdb',
     entities: [
+        UserEntity
     ],
     logging: Boolean(process.env.DB_LOGGING),
-    synchronize: false
+    synchronize: true
 };

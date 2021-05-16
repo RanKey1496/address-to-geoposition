@@ -4,7 +4,7 @@ import Types from '../../config/types';
 import UserEntity from '../../entity/user';
 import UserService from './userService';
 import UserRepository from '../../repository/user/userRepository';
-import { NotFound } from '../../util/exception';
+import { BadRequest, NotFound } from '../../util/exception';
 
 @injectable()
 export default class UserServiceImpl implements UserService {
@@ -13,10 +13,17 @@ export default class UserServiceImpl implements UserService {
 
     constructor(@inject(Types.UserRepository) private readonly userRepository: UserRepository) {}
 
+    private async getHash(password: string): Promise<string> {
+        return bcrypt.hash(password, this.saltRounds);
+    }
+
+    private async compareHash(password: string, hash: string): Promise<Boolean> {
+        return bcrypt.compare(password, hash);
+    }
+
     public async existsByUsername(username: string): Promise<Boolean> {
         const result = await this.userRepository.findByUsername(username);
-        if (!result) return false;
-        return true;
+        return !!result;
     }
 
     public async getUserByUsername(username: string): Promise<UserEntity> {
@@ -34,12 +41,16 @@ export default class UserServiceImpl implements UserService {
         return await this.userRepository.save(user);
     }
 
-    private async getHash(password: string): Promise<string> {
-        return bcrypt.hash(password, this.saltRounds);
+    public async validateUserDoesntExists(username: string): Promise<void> {
+        const exists = await this.existsByUsername(username);
+        if (exists) throw new BadRequest('Unable to create user with that username');
     }
 
-    private async compareHash(password: string, hash: string): Promise<Boolean> {
-        return bcrypt.compare(password, hash);
+    public async validateUserCanLogin(user: UserEntity, password: string): Promise<void> {
+        const result = await this.compareHash(password, user.passwordHash);
+        if (!result) {
+            throw new BadRequest('Invalid username or password');
+        }
     }
 
 }
