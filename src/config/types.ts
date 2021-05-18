@@ -1,8 +1,10 @@
 const Types = {
     Controller: Symbol('Controller'),
+    AuthService: Symbol('AuthService'),
     UserService: Symbol('UserService'),
     UserRepository: Symbol('UserRepository'),
-    AuthService: Symbol('AuthService'),
+    ConverterService: Symbol('ConverterService'),
+    ConverterStrategy: Symbol('ConverterStrategy')
 };
 
 export default Types;
