@@ -15,11 +15,21 @@ if (ENVIRONMENT === 'production') {
     process.exit(1);
   }
 } else {
-  if (fs.existsSync('.env.dev')) {
-    console.info('Using development environment variables');
-    dotenv.config({ path: '.env.dev' });
-  } else {
-      console.error('Cant load development .env.dev variables');
+  if (ENVIRONMENT === 'test') {
+    if (fs.existsSync('.env.test')) {
+      console.info('Using test environment variables');
+      dotenv.config({ path: '.env.test' });
+    } else {
+      console.error('Cant load test .env variables');
       process.exit(1);
+    }
+  } else {
+    if (fs.existsSync('.env.dev')) {
+      console.info('Using development environment variables');
+      dotenv.config({ path: '.env.dev' });
+    } else {
+        console.error('Cant load development .env.dev variables');
+        process.exit(1);
+    }
   }
 }
