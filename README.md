@@ -75,10 +75,18 @@ GET - http://localhost:3000/converter
 
 ## ¿Que se hizo?
 Se creó un servicio utilizando Express que expone varios endpoints.
+```
 /signup nos permite crear un usuario en el sistema, además válida que los parametros enviados en el body sean válidos.
+```
+```
 /login nos permite solicitar claves de acceso (token y refresh token)
+```
+```
 /refresh permite solicitar un nuevo token apartir de un token ya existente
+```
+```
 /converter se envía una dirección, ubicación o lugar por medio del query param "address", este valor se consulta en las API de Mapbox, si no se encuentran resultados, entonces se buscaría en la API de Here, en caso de no obtener resultados, retorna un error.
+```
 Dentro del proyecto se utilizaron varios patrones de diseño, principalmente se utilizó el patrón Strategy, adicional podemos ver el patrón Dependency Injection con Inversify y el patrón Builder para hacer más fácil las pruebas unitarias.
 
 ## Construido con 🛠️
