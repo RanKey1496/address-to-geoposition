@@ -1,4 +1,5 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 import { HttpException } from './exception';
 
 function data(success: boolean, message: string) {
@@ -10,6 +11,13 @@ function data(success: boolean, message: string) {
 
 export function dataResponse(res: Response, data: any) {
     return res.status(200).json({ success: true, data });
+}
+
+export function validatorResponse(req: Request, res: Response) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 }
 
 export function exceptionResponse(res: Response, exception: HttpException) {

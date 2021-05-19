@@ -2,53 +2,53 @@ import 'reflect-metadata';
 import got, { Got } from 'got';
 import { mocked } from 'ts-jest/utils';
 import ConverterStrategy from '../../src/service/converter/strategy/converterStrategy';
-import MapBoxService from '../../src/service/converter/strategy/mapboxService';
+import HereService from '../../src/service/converter/strategy/hereService';
 import { MockedFunction } from 'ts-jest/dist/utils/testing';
 
-describe('MapboxService', () => {
+describe('HereService', () => {
 
-    let mapboxService: ConverterStrategy;
+    let hereService: ConverterStrategy;
     let mockedGot: MockedFunction<Got>;
 
     beforeAll(() => {
         jest.mock('got');
         mockedGot = mocked(got);
-        process.env.MAPBOX_API_KEY = '123';
-        mapboxService = new MapBoxService();
+        process.env.HERE_API_KEY = '123';
+        hereService = new HereService();
     });
 
     it('should return coords', async () => {
         const expected = { latitude: 1, longitude: 1 };
         mockedGot.get = jest.fn().mockReturnValue({
             json: () => { return Promise.resolve({
-                features: [
-                    { geometry: { coordinates: [ 1, 1 ] }},
-                    { geometry: { coordinates: [ 2, 2 ] }},
-                    { geometry: { coordinates: [ 3, 3 ] }}
+                items: [
+                    { position: { lat: 1, lng: 1 }},
+                    { position: { lat: 2, lng: 2 }},
+                    { position: { lat: 3, lng: 3 }}
                 ]
             }) },
         } as any);
-        const result = await mapboxService.getGepositionFromAddress('fatima');
+        const result = await hereService.getGepositionFromAddress('fatima');
         expect(result).toEqual(expected)
     });
 
     it('should return undefined without result', async () => {
         mockedGot.get = jest.fn().mockReturnValue({
             json: () => { return Promise.resolve({
-                features: []
+                items: []
             }) },
         } as any);
-        const result = await mapboxService.getGepositionFromAddress('fatima');
+        const result = await hereService.getGepositionFromAddress('fatima');
         expect(result).toEqual(undefined)
     });
 
     it('should return undefined with any error', async () => {
         mockedGot.get = jest.fn().mockReturnValue({
             json: () => { return Promise.resolve({
-                noFeatures: []
+                noItems: []
             }) },
         } as any);
-        const result = await mapboxService.getGepositionFromAddress('fatima');
+        const result = await hereService.getGepositionFromAddress('fatima');
         expect(result).toEqual(undefined)
     });
 

@@ -45,6 +45,7 @@
     "dotenv": "^9.0.2",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
+    "express-validator": "^6.11.1",
     "got": "^11.8.2",
     "helmet": "^4.6.0",
     "inversify": "^5.1.1",

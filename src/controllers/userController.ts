@@ -1,10 +1,11 @@
 import RegistrableController from './registrableController';
 import { inject, injectable } from 'inversify';
 import { Application, NextFunction, Request, Response } from 'express';
-import { dataResponse } from '../util/response';
+import { dataResponse, validatorResponse } from '../util/response';
 import Types from '../config/types';
 import UserService from '../service/user/userService';
 import AuthService from '../service/auth/authService';
+import { body } from 'express-validator';
 
 @injectable()
 export default class UserController implements RegistrableController {
@@ -18,23 +19,30 @@ export default class UserController implements RegistrableController {
     public register(app: Application): void {
 
         app.route('/signup')
-            .post(async (req: Request, res: Response, next: NextFunction) => {
+            .post([
+                    body('username').exists(),
+                    body('password').isLength({ min: 5 })
+                ],
+                async (req: Request, res: Response, next: NextFunction) => {
                 try {
-                    // Validar parametros que llegan
+                    if (validatorResponse(req, res)) return;
                     const { username, password } = req.body;
                     await this.userService.validateUserDoesntExists(username);
                     await this.userService.createUser(username, password);
                     return dataResponse(res, 'User created successfully');
                 } catch (error) {
-                    console.log(error)
                     return next(error);
                 }
             });
 
         app.route('/login')
-            .post(async (req: Request, res: Response, next: NextFunction) => {
+            .post([
+                    body('username').exists(),
+                    body('password').exists()
+                ],
+                async (req: Request, res: Response, next: NextFunction) => {
                 try {
-                    // Validar parametros
+                    if (validatorResponse(req, res)) return;
                     const { username, password } = req.body;
                     const user = await this.userService.getUserByUsername(username);
                     await this.userService.validateUserCanLogin(user, password);

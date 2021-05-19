@@ -14,13 +14,5 @@ module.exports = {
 	testMatch: [
 		'**/test/**/*.test.(ts|js)'
 	],
-	testEnvironment: 'node',
-	coverageThreshold: {
-		global: {
-			"branches": 80,
-			"functions": 80,
-			"lines": 80,
-			"statements": -10
-	  }
-	}
+	testEnvironment: 'node'
 };
