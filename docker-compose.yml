@@ -10,6 +10,22 @@ services:
       - POSTGRES_DB=converterdb
     volumes:
       - pgdata:/var/lib/postgresql/data
+  converter:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=geoposition
+      - DB_NAME=converterdb
+      - DB_LOGGING=true
+      - SECRET_KEY=pruebakey
+      - MAPBOX_API_KEY=pk.eyJ1IjoiYXJyZW5kYW1pZW50b3NudXRpYmFyYSIsImEiOiJjazdxcHR2eDcwNjdrM2dyMjNyNmExajFoIn0.fwJ5pmAnrAZNI4HT_Hmnpw
+      - HERE_API_KEY=3giZyOe29YWsIn7G8p4Jl12AGs8cl8XH-breUJIENPA
 volumes:
   pgdata:
     external: false
